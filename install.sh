@@ -59,33 +59,43 @@ fi
 # ===== SET PERMISSIONS =====
 chmod +x ~/.onlock/MiCommunityTool.py
 
-# ===== CREATE ALIAS =====
+# ===== ACTIVATE COMMAND GLOBALLY =====
 echo -e "${GREEN}🔧 Creating 'onlock' command...${NC}"
 
+# Add alias to bashrc
 if [ -f ~/.bashrc ]; then
     if ! grep -q "alias onlock=" ~/.bashrc; then
         echo "alias onlock='python3 ~/.onlock/MiCommunityTool.py'" >> ~/.bashrc
     fi
 fi
 
+# Add alias to zshrc
 if [ -f ~/.zshrc ]; then
     if ! grep -q "alias onlock=" ~/.zshrc; then
         echo "alias onlock='python3 ~/.onlock/MiCommunityTool.py'" >> ~/.zshrc
     fi
 fi
 
-# ===== RELOAD =====
+# ===== RELOAD SHELL CONFIGURATION IN CURRENT SESSION =====
+echo -e "${YELLOW}🔄 Activating command in current session...${NC}"
 source ~/.bashrc 2>/dev/null || source ~/.zshrc 2>/dev/null
+
+# ===== CREATE A DIRECT EXECUTABLE SCRIPT AS FALLBACK =====
+echo '#!/bin/bash
+python3 ~/.onlock/MiCommunityTool.py "$@"' > ~/.onlock/onlock
+chmod +x ~/.onlock/onlock
+
+# Add to PATH without needing alias (for all sessions)
+if [[ ":$PATH:" != *":$HOME/.onlock:"* ]]; then
+    echo 'export PATH="$HOME/.onlock:$PATH"' >> ~/.bashrc
+    echo 'export PATH="$HOME/.onlock:$PATH"' >> ~/.zshrc 2>/dev/null
+    export PATH="$HOME/.onlock:$PATH"
+fi
 
 # ===== COMPLETE =====
 echo -e "${GREEN}✅ Installation complete!${NC}"
-echo -e "${YELLOW}ℹ️ Hidden folder created: ${GREEN}~/.onlock/${NC}"
-echo -e "${YELLOW}ℹ️ Script location: ${GREEN}~/.onlock/MiCommunityTool.py${NC}"
-echo -e "${YELLOW}ℹ️ Run '${GREEN}onlock${YELLOW}' to start the tool${NC}"
-echo -e "${YELLOW}ℹ️ Or run: ${GREEN}python3 ~/.onlock/MiCommunityTool.py${NC}"
-
-echo -e "${GREEN}✅ Installation complete!${NC}"
 echo -e "${YELLOW}▶️ Type '${GREEN}onlock${YELLOW}' to start the tool.${NC}"
 
-# ===== REMOVED AUTO-RUN =====
-# اسکریپت دیگه خودکار اجرا نمیشه تا کاربر بتونه با دستور onlock اجراش کنه
+# ===== RUN SCRIPT IMMEDIATELY =====
+echo -e "\n${GREEN}🚀 Starting MiCommunityTool...${NC}"
+python3 ~/.onlock/MiCommunityTool.py
