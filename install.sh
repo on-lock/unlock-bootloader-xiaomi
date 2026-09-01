@@ -7,7 +7,7 @@ YELLOW='\033[1;33m'
 CYAN='\033[0;36m'
 WHITE='\033[1;37m'
 BOLD='\033[1m'
-NC='\033[0m' # No Color
+NC='\033[0m'
 
 # ===== ASCII ART =====
 echo -e "${CYAN}${BOLD}"
@@ -29,7 +29,7 @@ echo -e "${CYAN}${BOLD}╚══════════════════
 # ===== CHECK PYTHON =====
 if ! command -v python3 &> /dev/null; then
     echo -e "${RED}❌ Python3 not found! Installing...${NC}"
-    pkg install python3 -y 2>/dev/null || apt install python3 -y 2>/dev/null || echo -e "${RED}❌ Please install Python3 manually${NC}"
+    pkg install python3 -y 2>/dev/null || apt install python3 -y 2>/dev/null
 fi
 
 # ===== CHECK PIP =====
@@ -46,9 +46,15 @@ pip install requests ntplib 2>/dev/null
 echo -e "${GREEN}📁 Creating hidden folder ~/.onlock...${NC}"
 mkdir -p ~/.onlock
 
-# ===== DOWNLOAD MAIN SCRIPT TO HIDDEN FOLDER =====
+# ===== DOWNLOAD MAIN SCRIPT =====
 echo -e "${GREEN}📥 Downloading MiCommunityTool.py to ~/.onlock/...${NC}"
-curl -sSL "https://raw.githubusercontent.com/YOUR_USERNAME/MiCommunityPermissionTool/main/MiCommunityTool.py" -o ~/.onlock/MiCommunityTool.py
+curl -sSL "https://raw.githubusercontent.com/on-lock/unlock-bootloader-xiaomi/main/MiCommunityTool.py" -o ~/.onlock/MiCommunityTool.py
+
+# ===== CHECK IF DOWNLOAD SUCCEEDED =====
+if [ ! -s ~/.onlock/MiCommunityTool.py ]; then
+    echo -e "${RED}❌ Download failed! File is empty.${NC}"
+    exit 1
+fi
 
 # ===== SET PERMISSIONS =====
 chmod +x ~/.onlock/MiCommunityTool.py
@@ -56,37 +62,27 @@ chmod +x ~/.onlock/MiCommunityTool.py
 # ===== CREATE ALIAS =====
 echo -e "${GREEN}🔧 Creating 'unlock' command...${NC}"
 
-# برای bash
 if [ -f ~/.bashrc ]; then
     if ! grep -q "alias unlock=" ~/.bashrc; then
         echo "alias unlock='python3 ~/.onlock/MiCommunityTool.py'" >> ~/.bashrc
     fi
 fi
 
-# برای zsh
 if [ -f ~/.zshrc ]; then
     if ! grep -q "alias unlock=" ~/.zshrc; then
         echo "alias unlock='python3 ~/.onlock/MiCommunityTool.py'" >> ~/.zshrc
     fi
 fi
 
-# برای termux
-if [ -f ~/.bashrc ]; then
-    if ! grep -q "alias unlock=" ~/.bashrc; then
-        echo "alias unlock='python3 ~/.onlock/MiCommunityTool.py'" >> ~/.bashrc
-    fi
-fi
+# ===== RELOAD =====
+source ~/.bashrc 2>/dev/null || source ~/.zshrc 2>/dev/null
 
-# ===== RELOAD SHELL =====
+# ===== COMPLETE =====
 echo -e "${GREEN}✅ Installation complete!${NC}"
 echo -e "${YELLOW}ℹ️ Hidden folder created: ${GREEN}~/.onlock/${NC}"
 echo -e "${YELLOW}ℹ️ Script location: ${GREEN}~/.onlock/MiCommunityTool.py${NC}"
 echo -e "${YELLOW}ℹ️ Run '${GREEN}unlock${YELLOW}' to start the tool${NC}"
-echo -e "${YELLOW}ℹ️ Or run: ${GREEN}python3 ~/.onlock/MiCommunityTool.py${NC}"
 
-# ===== RELOAD ALIAS =====
-source ~/.bashrc 2>/dev/null || source ~/.zshrc 2>/dev/null
-
-# ===== RUN SCRIPT =====
+# ===== RUN =====
 echo -e "\n${GREEN}🚀 Starting MiCommunityTool...${NC}"
 python3 ~/.onlock/MiCommunityTool.py
