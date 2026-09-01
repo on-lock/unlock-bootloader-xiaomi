@@ -59,43 +59,54 @@ fi
 # ===== SET PERMISSIONS =====
 chmod +x ~/.onlock/MiCommunityTool.py
 
-# ===== ACTIVATE COMMAND GLOBALLY =====
-echo -e "${GREEN}🔧 Creating 'onlock' command...${NC}"
+# ===== CREATE EXECUTABLE SCRIPT IN /DATA/DATA/COM.TERMUX/FILES/USR/BIN/ =====
+echo -e "${GREEN}🔧 Installing 'onlock' command system-wide...${NC}"
 
-# Add alias to bashrc
+# Termux path
+if [ -d "/data/data/com.termux/files/usr/bin" ]; then
+    echo '#!/bin/bash
+python3 ~/.onlock/MiCommunityTool.py "$@"' > /data/data/com.termux/files/usr/bin/onlock
+    chmod +x /data/data/com.termux/files/usr/bin/onlock
+    echo -e "${GREEN}✅ Installed to Termux bin${NC}"
+# Linux path
+elif [ -d "/usr/local/bin" ]; then
+    echo '#!/bin/bash
+python3 ~/.onlock/MiCommunityTool.py "$@"' > /usr/local/bin/onlock
+    chmod +x /usr/local/bin/onlock
+    echo -e "${GREEN}✅ Installed to /usr/local/bin${NC}"
+else
+    # Fallback: add to PATH via .bashrc
+    echo -e "${YELLOW}⚠️ Could not install system-wide. Adding to PATH...${NC}"
+    echo 'export PATH="$HOME/.onlock:$PATH"' >> ~/.bashrc
+    echo 'export PATH="$HOME/.onlock:$PATH"' >> ~/.zshrc 2>/dev/null
+    mkdir -p ~/.onlock
+    echo '#!/bin/bash
+python3 ~/.onlock/MiCommunityTool.py "$@"' > ~/.onlock/onlock
+    chmod +x ~/.onlock/onlock
+fi
+
+# ===== ALSO ADD ALIAS FOR SAFETY =====
+echo -e "${GREEN}🔧 Creating alias for safety...${NC}"
 if [ -f ~/.bashrc ]; then
     if ! grep -q "alias onlock=" ~/.bashrc; then
         echo "alias onlock='python3 ~/.onlock/MiCommunityTool.py'" >> ~/.bashrc
     fi
 fi
 
-# Add alias to zshrc
 if [ -f ~/.zshrc ]; then
     if ! grep -q "alias onlock=" ~/.zshrc; then
         echo "alias onlock='python3 ~/.onlock/MiCommunityTool.py'" >> ~/.zshrc
     fi
 fi
 
-# ===== RELOAD SHELL CONFIGURATION IN CURRENT SESSION =====
-echo -e "${YELLOW}🔄 Activating command in current session...${NC}"
+# ===== RELOAD =====
+echo -e "${YELLOW}🔄 Reloading shell configuration...${NC}"
 source ~/.bashrc 2>/dev/null || source ~/.zshrc 2>/dev/null
-
-# ===== CREATE A DIRECT EXECUTABLE SCRIPT AS FALLBACK =====
-echo '#!/bin/bash
-python3 ~/.onlock/MiCommunityTool.py "$@"' > ~/.onlock/onlock
-chmod +x ~/.onlock/onlock
-
-# Add to PATH without needing alias (for all sessions)
-if [[ ":$PATH:" != *":$HOME/.onlock:"* ]]; then
-    echo 'export PATH="$HOME/.onlock:$PATH"' >> ~/.bashrc
-    echo 'export PATH="$HOME/.onlock:$PATH"' >> ~/.zshrc 2>/dev/null
-    export PATH="$HOME/.onlock:$PATH"
-fi
 
 # ===== COMPLETE =====
 echo -e "${GREEN}✅ Installation complete!${NC}"
 echo -e "${YELLOW}▶️ Type '${GREEN}onlock${YELLOW}' to start the tool.${NC}"
 
-# ===== RUN SCRIPT IMMEDIATELY =====
+# ===== RUN =====
 echo -e "\n${GREEN}🚀 Starting MiCommunityTool...${NC}"
 python3 ~/.onlock/MiCommunityTool.py
