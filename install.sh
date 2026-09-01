@@ -210,3 +210,5 @@ echo -e "   ${WHITE}source ~/.bashrc${NC} or ${WHITE}source ~/.zshrc${NC}"
 echo -e "   Or simply restart your terminal\n"
 
 echo -e "${GREEN}✅ Done! Run 'onlock' to start the tool.${NC}"
+
+# حذف بخش سوال برای اجرای خودکار
