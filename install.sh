@@ -82,7 +82,10 @@ echo -e "${GREEN}✅ Installation complete!${NC}"
 echo -e "${YELLOW}ℹ️ Hidden folder created: ${GREEN}~/.onlock/${NC}"
 echo -e "${YELLOW}ℹ️ Script location: ${GREEN}~/.onlock/MiCommunityTool.py${NC}"
 echo -e "${YELLOW}ℹ️ Run '${GREEN}onlock${YELLOW}' to start the tool${NC}"
+echo -e "${YELLOW}ℹ️ Or run: ${GREEN}python3 ~/.onlock/MiCommunityTool.py${NC}"
 
-# ===== RUN =====
-echo -e "\n${GREEN}🚀 Starting MiCommunityTool...${NC}"
-python3 ~/.onlock/MiCommunityTool.py
+echo -e "${GREEN}✅ Installation complete!${NC}"
+echo -e "${YELLOW}▶️ Type '${GREEN}onlock${YELLOW}' to start the tool.${NC}"
+
+# ===== REMOVED AUTO-RUN =====
+# اسکریپت دیگه خودکار اجرا نمیشه تا کاربر بتونه با دستور onlock اجراش کنه
