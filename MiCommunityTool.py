@@ -82,24 +82,6 @@ def check_telegram_join(user_id):
         print(f"{RED}✖ Telegram API error: {e}{RESET}")
         return False
 
-# ===== CONVERT USERNAME TO ID =====
-def username_to_id(username):
-    """تبدیل یوزرنیم تلگرام به User ID عددی"""
-    if not username.startswith("@"):
-        return username
-    
-    url = f"https://api.telegram.org/bot{BOT_TOKEN}/getChat"
-    try:
-        r = requests.get(url, params={"chat_id": username}).json()
-        if r.get("ok"):
-            return str(r["result"]["id"])
-        else:
-            print(f"{RED}✖ Invalid username: {username}{RESET}")
-            return None
-    except Exception as e:
-        print(f"{RED}✖ Error converting username: {e}{RESET}")
-        return None
-
 # ===== VERIFICATION BOX =====
 print(
     f"\n{CYAN}{BOLD}╔══════════════════════════════════════╗{RESET}\n"
@@ -109,21 +91,13 @@ print(
     f"{CYAN}{BOLD}╚══════════════════════════════════════╝{RESET}"
 )
 
-tg_id = input(f"{YELLOW}➤ Enter your Telegram User ID or @username: {RESET}").strip()
+tg_id = input(f"{YELLOW}➤ Enter your Telegram User ID (number): {RESET}").strip()
 
 if not tg_id:
     exit(f"{RED}❌ Telegram User ID required!{RESET}")
 
-# تبدیل یوزرنیم به عدد (اگه با @ شروع شده باشه)
-if tg_id.startswith("@"):
-    converted = username_to_id(tg_id)
-    if converted:
-        tg_id = converted
-        print(f"{GREEN}✅ Converted {tg_id} to ID: {converted}{RESET}")
-    else:
-        exit(f"{RED}❌ Could not convert username to ID!{RESET}")
-elif not tg_id.isdigit():
-    exit(f"{RED}❌ User ID must be a number or @username!{RESET}")
+if not tg_id.isdigit():
+    exit(f"{RED}❌ User ID must be a number!{RESET}")
 
 if not check_telegram_join(tg_id):
     exit(f"{RED}❌ You must join the Telegram channel first!{RESET}")
